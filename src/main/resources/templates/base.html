@@ -26,7 +26,11 @@
 
 <div th:fragment="divCabecalho" class="logo-container mb-3 p-3 d-flex justify-content-between">
   <span class="logo corTop">mudi</span>
-  <span class="mt-3 corTop">login</span>
+  <span class="mt-3">
+    <a class="corTop" href="/login" sec:authorize="!isAuthenticated()">login</a>
+    <a onclick="document.querySelector('#form-login').submit()" class="corTop" href="#" sec:authorize="isAuthenticated()">logout</a>
+    <form id="form-login" th:action="@{/logout}" method="post"></form>
+  </span>
 </div>
 
 <div th:fragment="titulo(valor)" class="jumbotron mb-0">
