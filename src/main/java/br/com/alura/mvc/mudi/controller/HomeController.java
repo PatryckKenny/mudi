@@ -4,6 +4,8 @@ import br.com.alura.mvc.mudi.model.Pedido;
 import br.com.alura.mvc.mudi.model.StatusPedido;
 import br.com.alura.mvc.mudi.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,22 +26,11 @@ public class HomeController {
     @GetMapping
     public String home(Model model, Principal principal){
 
-        List<Pedido> pedidos = pedidosRepository.findAll();
+        Sort dataDaEntrega = Sort.by("dataDaEntrega").descending();
+        PageRequest page = PageRequest.of(0, 10, dataDaEntrega);
+
+        List<Pedido> pedidos = pedidosRepository.findByStatusPedido(StatusPedido.ENTREGUE, page);
         model.addAttribute("pedidos", pedidos);
         return "home";
-    }
-
-    @GetMapping("/{status}")
-    public String aguardando(@PathVariable("status") String status, Model model){
-
-        List<Pedido> pedidos = pedidosRepository.findByStatusPedido(StatusPedido.valueOf(status.toUpperCase()));
-        model.addAttribute("pedidos", pedidos);
-        model.addAttribute("status", status);
-        return "home";
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String onError(){
-        return "redirect:/home";
     }
 }
